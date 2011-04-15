@@ -80,7 +80,7 @@ class FacebookAutoUserBackend:
         if not fb_user.user_id:
             try:
                 fb_user.user = User.objects.get(username='fb_%s' % fb_user.facebook_id,)
-            except UserDoesNotExist:
+            except User.DoesNotExist:
                 fb_user.user = User.objects.get_or_create(
                     username='fb_%s' % fb_user.facebook_id,
                     first_name=fb_profile['first_name'],
