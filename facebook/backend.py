@@ -85,6 +85,7 @@ class FacebookAutoUserBackend:
                     username='fb_%s' % fb_user.facebook_id,
                     first_name=fb_profile['first_name'],
                     last_name=fb_profile['last_name'],
+                    email=fb_profile['email'],
                 )
 
         fb_user.save()
