@@ -38,10 +38,10 @@ def authenticate_view(request):
         else:
             return HttpResponseRedirect(reverse('facebook.views.register_view'))
     else:
-        if request.GET.get('ignorereferer') != '1':
-            referer = request.META.get('HTTP_REFERER')
-            if not referer is None:
-                request.session['fb_return_uri'] = referer
+        if request.GET.get('next', None):
+            request.session['fb_return_uri'] = request.GET['next']
+        else:
+            request.session['fb_return_uri'] = request.META.get('HTTP_REFERER')
         
         return HttpResponseRedirect('https://www.facebook.com/dialog/oauth?' + urllib.urlencode(args))
 
