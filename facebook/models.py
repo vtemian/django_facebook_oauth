@@ -6,3 +6,7 @@ class FacebookUser(models.Model):
     user = models.ForeignKey(User, unique=True)
     facebook_id = models.CharField(max_length=150, unique=True)
     access_token = models.CharField(max_length=150, blank=True, null=True)
+    profile_json = models.TextField()
+    
+    def __unicode__(self):
+        return unicode(self.user)

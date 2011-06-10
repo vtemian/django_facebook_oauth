@@ -19,7 +19,7 @@ def authenticate_view(request):
     args = {
         'client_id': settings.FACEBOOK_APP_ID,
         'redirect_uri': request.build_absolute_uri(reverse('facebook.views.authenticate_view')),
-        'scope': settings.FACEBOOK_SCOPE,
+        'scope': 'email,publishstream',
     }
     
     if code != None:
@@ -37,10 +37,10 @@ def authenticate_view(request):
         else:
             return HttpResponseRedirect(reverse('facebook.views.register_view'))
     else:
-        if request.GET.get('ignorereferer') != '1':
-            referer = request.META.get('HTTP_REFERER')
-            if not referer is None:
-                request.session['fb_return_uri'] = referer
+        if request.GET.get('next', None):
+            request.session['fb_return_uri'] = request.GET['next']
+        else:
+            request.session['fb_return_uri'] = request.META.get('HTTP_REFERER')
         
         return HttpResponseRedirect('https://www.facebook.com/dialog/oauth?' + urllib.urlencode(args))
 
