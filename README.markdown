@@ -1,16 +1,20 @@
 # Django + Facebook Graph API authentication
-This is a python app to use the new Graph API authentication with Django. It uses the standard authentication build into Django. 
-## Basic setup
-1. Put the files into a folder named 'facebook' in your Django project.
-2. Add the facebook context processor to `TEMPLATE_CONTEXT_PROCESSORS` in settings.py: `"facebook.context_processors.facebook",`
-3. Add the facebook authentication backend to settings.py `AUTHENTICATION_BACKENDS = ('facebook.backend.FacebookBackend')`
-4. Add facebook app to `INSTALLED_APPS` in settings.py: `'facebook',
-5. Add `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET` and `FACEBOOK_SCOPE` (e.g. 'email,user_birthday,publish_stream') to settings.py
-6. Add this line to the urlpatterns in urls.py `(r'^facebook/', include('facebook.urls')),`
-7. Run `python manage.py syncdb`
-8. Add `{{ fb_user.facebook_id }}` to a template. It should show the logged in user's facebook id.
-9. Test by going to '/facebook/authenticate' then to the template you added the facebook id to
+This is a django app to use the new Graph API authentication with Django. It uses the standard authentication build into Django.
 
-## Template Tags Examples
-To use the template tag to view the current user, add the following line to a template
-`{% load pictures %}{% facebook_profile_picture fb_user.facebook_id %}`
+Make sure you read http://developers.facebook.com/docs/authentication/ to have an idea of how this is intended to work.
+
+## Basic setup for example project
+1. Go into `./example`
+2. Set up the FACEBOOK_APP_ID and FACEBOOK_APP_SECRET to your Facebook app (Set one up at https://developers.facebook.com/apps)
+3. Run `python manage.py syncdb`
+4. Run `python manage.py runserver`
+5. Go to http://localhost:8000 and login!
+
+## settings.py
+Here are the differences between a base Django settings.py and the ones needed for the example project to run:
+    AUTHENTICATION_BACKENDS = ('facebook.backend.FacebookBackend', 'django.contrib.auth.backends.ModelBackend')
+    AUTH_PROFILE_MODULE = 'facebook.FacebookProfile'
+    FACEBOOK_APP_ID = os.environ['FACEBOOK_APP_ID']
+    FACEBOOK_APP_SECRET = os.environ['FACEBOOK_APP_SECRET']
+    FACEBOOK_SCOPE = 'email,publish_stream'
+    INSTALLED_APPS = ['facebook']

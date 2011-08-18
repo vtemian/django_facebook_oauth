@@ -1,9 +1,8 @@
-# -*- encoding: utf-8 -*-
 from setuptools import setup
 
 setup(
     name='django-facebook-oauth',
-    version='1.0',
+    version='2.0',
     description="Facebook OAuth2 authentication for Django.",
     long_description=open('README.markdown').read(),
     author='Jeff Dickey',

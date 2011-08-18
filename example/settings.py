@@ -1,3 +1,7 @@
+# Hack to load the facebook app in this repo
+import sys, os
+sys.path.append(os.path.join(os.getcwd(), '..'))
+
 # Django settings for example project.
 
 DEBUG = True
@@ -27,7 +31,7 @@ DATABASES = {
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'America/Los_Angeles'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -103,6 +107,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'example.urls'
 
 TEMPLATE_DIRS = (
+    os.path.join(os.getcwd(), 'templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -115,10 +120,21 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admin',
+    'django.contrib.admindocs',
+    'facebook',
+)
+
+# Facebook settings are set via environment variables
+FACEBOOK_APP_ID = os.environ['FACEBOOK_APP_ID']
+FACEBOOK_APP_SECRET = os.environ['FACEBOOK_APP_SECRET']
+FACEBOOK_SCOPE = 'email,publish_stream'
+
+AUTH_PROFILE_MODULE = 'facebook.FacebookProfile'
+
+AUTHENTICATION_BACKENDS = (
+    'facebook.backend.FacebookBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 # A sample logging configuration. The only tangible logging
