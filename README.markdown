@@ -12,6 +12,7 @@ Make sure you read http://developers.facebook.com/docs/authentication/ to have a
 
 ## settings.py
 Here are the differences between a base Django settings.py and the ones needed for the example project to run:
+
     AUTHENTICATION_BACKENDS = ('facebook.backend.FacebookBackend', 'django.contrib.auth.backends.ModelBackend')
     AUTH_PROFILE_MODULE = 'facebook.FacebookProfile'
     FACEBOOK_APP_ID = os.environ['FACEBOOK_APP_ID']
