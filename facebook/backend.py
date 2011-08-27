@@ -1,7 +1,7 @@
 import cgi, urllib, json
 
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.db import IntegrityError
 
 from facebook.models import FacebookProfile
@@ -35,21 +35,38 @@ class FacebookBackend:
             fb_user.save()
 
         except FacebookProfile.DoesNotExist:
-            # No existing user, create one
+            # No existing user
 
-            username = fb_profile.get('username', fb_profile['email'].split('@')[0])# Not all users have usernames
-            try:
-                user = User.objects.create_user(username, fb_profile['email'])
-            except IntegrityError:
-                # Username already exists, make it unique
-                user = User.objects.create_user(username + fb_profile['id'], fb_profile['email'])
-            user.first_name = fb_profile['first_name']
-            user.last_name = fb_profile['last_name']
-            user.save()
+            # Not all users have usernames
+            username = fb_profile.get('username', fb_profile['email'].split('@')[0])
 
-            # Create the FacebookProfile
-            fb_user = FacebookProfile(user=user, facebook_id=fb_profile['id'], access_token=access_token)
-            fb_user.save()
+            if getattr(settings, 'FACEBOOK_FORCE_SIGNUP', False):
+                # No existing user, use anonymous
+                user = AnonymousUser()
+                user.username = username
+                user.first_name = fb_profile['first_name']
+                user.last_name = fb_profile['last_name']
+                fb_user = FacebookProfile(
+                        facebook_id=fb_profile['id'],
+                        access_token=access_token
+                )
+                user.facebookprofile = fb_user
+
+            else:
+                # No existing user, create one
+
+                try:
+                    user = User.objects.create_user(username, fb_profile['email'])
+                except IntegrityError:
+                    # Username already exists, make it unique
+                    user = User.objects.create_user(username + fb_profile['id'], fb_profile['email'])
+                user.first_name = fb_profile['first_name']
+                user.last_name = fb_profile['last_name']
+                user.save()
+
+                # Create the FacebookProfile
+                fb_user = FacebookProfile(user=user, facebook_id=fb_profile['id'], access_token=access_token)
+                fb_user.save()
 
         return user
 
@@ -61,4 +78,4 @@ class FacebookBackend:
             return None
 
     supports_object_permissions = False
-    supports_anonymous_user = False
+    supports_anonymous_user = True
