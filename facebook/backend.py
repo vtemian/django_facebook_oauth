@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.db import IntegrityError
 
 from account.models import UserProfile
+import hashlib
 
 class FacebookBackend:
     def authenticate(self, token=None, request=None):
@@ -65,7 +66,7 @@ class FacebookBackend:
                 user.save()
 
                 # Create the FacebookProfile
-                fb_user = UserProfile(user=user, facebook_id=fb_profile['id'], access_token=access_token)
+                fb_user = UserProfile(user=user, facebook_id=fb_profile['id'], access_token=access_token, gravatar_url= "http://www.gravatar.com/avatar/" + hashlib.md5(fb_profile['email']).hexdigest())
                 fb_user.save()
 
         return user
