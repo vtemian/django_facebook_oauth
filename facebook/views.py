@@ -38,3 +38,6 @@ def authentication_callback(request):
         resp = HttpResponseRedirect(url)
     
     return resp
+
+def facebook_setup(request):
+    print request.GET()

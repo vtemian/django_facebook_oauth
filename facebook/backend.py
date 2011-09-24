@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.db import IntegrityError
 
-from facebook.models import FacebookProfile
+from account.models import UserProfile
 
 class FacebookBackend:
     def authenticate(self, token=None, request=None):
@@ -27,14 +27,14 @@ class FacebookBackend:
 
         try:
             # Try and find existing user
-            fb_user = FacebookProfile.objects.get(facebook_id=fb_profile['id'])
+            fb_user = UserProfile.objects.get(facebook_id=fb_profile['id'])
             user = fb_user.user
 
             # Update access_token
             fb_user.access_token = access_token
             fb_user.save()
 
-        except FacebookProfile.DoesNotExist:
+        except UserProfile.DoesNotExist:
             # No existing user
 
             # Not all users have usernames
@@ -46,7 +46,7 @@ class FacebookBackend:
                 user.username = username
                 user.first_name = fb_profile['first_name']
                 user.last_name = fb_profile['last_name']
-                fb_user = FacebookProfile(
+                fb_user = UserProfile(
                         facebook_id=fb_profile['id'],
                         access_token=access_token
                 )
@@ -65,7 +65,7 @@ class FacebookBackend:
                 user.save()
 
                 # Create the FacebookProfile
-                fb_user = FacebookProfile(user=user, facebook_id=fb_profile['id'], access_token=access_token)
+                fb_user = UserProfile(user=user, facebook_id=fb_profile['id'], access_token=access_token)
                 fb_user.save()
 
         return user
